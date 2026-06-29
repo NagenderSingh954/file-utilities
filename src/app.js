@@ -13,7 +13,9 @@ app.use(express.static('public'))
 
 
 
+//routers 
 
+app.use('/api/v1/f/upload',)
 
 
 
