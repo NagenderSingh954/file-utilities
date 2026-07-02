@@ -7,16 +7,22 @@ import mongoose, { isValidObjectId } from "mongoose";
 
 
 const uploadFile = asynchandler(async (req, res) => {
+
     const { title, description } = req.body
     if ([title, description].some((field) => field?.trim() === '')) {
         throw new ApiError(400, "All field Are Required ")
     }
 
     const fileLocal = req.file?.path
+    const fileExtension = req.file.originalname
+  .split(".")
+  .pop()
+  .toLowerCase();
 
     if (!fileLocal) {
         throw new ApiError(404, "file is required")
     }
+    
 
     const file = await uploader(fileLocal)
 
@@ -27,9 +33,10 @@ const uploadFile = asynchandler(async (req, res) => {
     const dbfile = await FileDetail.create({
         title,
         description,
+        fileUrl: file.url,
         fileName: file.original_filename,
         fileSize: file.bytes,
-        fileType: file.format
+        fileType: fileExtension
     })
 
     if (!dbfile) {
@@ -64,7 +71,7 @@ const getFileById = asynchandler(async (req, res) => {
 const updateFile = asynchandler(async (req, res) => {
     const { fileId } = req.params
     const { title, description } = req.body
-
+    console.log("hello")
     if (!isValidObjectId(fileId)) {
         throw new ApiError(400, "Invalid File Access")
     }
@@ -81,7 +88,7 @@ const updateFile = asynchandler(async (req, res) => {
             }
         },
         {
-            new: true,
+            returnDocument: "after",
             runValidators: true
         }
     )
@@ -94,15 +101,33 @@ const updateFile = asynchandler(async (req, res) => {
     )
 })
 
-const getAllFile=asynchandler(async(req,res)=>{
-    const file=await FileDetail.find({})
+const getAllFile = asynchandler(async (req, res) => {
+    const file = await FileDetail.find({}).sort({ createdAt: -1 });
 
-    if(!file){
-        throw new ApiError(404,"No Item Found")
+    if (!file) {
+        throw new ApiError(404, "No Item Found")
     }
     return res.status(200).json(
-        new ApiResponce(200,file,"All File fetched Successfully")
+        new ApiResponce(200, file, "All File fetched Successfully")
     )
 })
 
-export { uploadFile,getFileById,updateFile,getAllFile}
+const deleteFile=asynchandler(async (req,res)=>{
+    const {fileId}=req.params
+    console.log('deleting')
+    if(!fileId){
+        throw new ApiError(404,"File not found")
+    }
+    const deleteing=await FileDetail.findByIdAndDelete(fileId)
+    console.log(deleteing)
+
+    if(!deleteing){
+        throw new ApiError(500,"File not exist")
+    }
+    console.log(fileId)
+    return res.status(200).json(
+        new ApiResponce(200,{fileId},"File Deleted Successfully ")
+    )
+})
+
+export { uploadFile, getFileById, updateFile, getAllFile,deleteFile }

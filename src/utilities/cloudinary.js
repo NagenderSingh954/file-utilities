@@ -13,12 +13,16 @@ const uploader=async (localPath)=>{
          resource_type:"auto",
      })
       console.log("File is Uploaded on Cloudinary",responce.url)
-         fs.unlinkSync(localFilePath) 
+      console.log(responce.resource_type);
+console.log(responce.format);
+console.log(responce.secure_url);
+         fs.unlinkSync(localPath) 
+         
         return responce;
 
    } catch (error) {
-        console("error occure while uploading on cloudinary")
-        fs.unlink(localPath)
+        console.log("error occure while uploading on cloudinary",error)
+        fs.unlinkSync(localPath)
         return;
    }
 }

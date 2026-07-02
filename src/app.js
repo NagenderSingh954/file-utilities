@@ -14,8 +14,9 @@ app.use(express.static('public'))
 
 
 //routers 
+import fileRouter from './routes/file.routes.js'
 
-app.use('/api/v1/f/upload',)
+app.use('/api/v1/files',fileRouter)
 
 
 
