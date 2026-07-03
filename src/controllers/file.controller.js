@@ -2,8 +2,10 @@ import { FileDetail } from "../models/file.model.js";
 import { ApiError } from "../utilities/ApiError.js";
 import { ApiResponce } from "../utilities/ApiResponce.js";
 import { asynchandler } from "../utilities/asynHandler.js";
-import { uploader } from "../utilities/cloudinary.js";
+import { deleteOnCloudinary, uploader } from "../utilities/cloudinary.js";
 import mongoose, { isValidObjectId } from "mongoose";
+import fs from "fs";
+import path from "path";
 
 
 const uploadFile = asynchandler(async (req, res) => {
@@ -15,14 +17,14 @@ const uploadFile = asynchandler(async (req, res) => {
 
     const fileLocal = req.file?.path
     const fileExtension = req.file.originalname
-  .split(".")
-  .pop()
-  .toLowerCase();
+        .split(".")
+        .pop()
+        .toLowerCase();
 
     if (!fileLocal) {
         throw new ApiError(404, "file is required")
     }
-    
+
 
     const file = await uploader(fileLocal)
 
@@ -71,7 +73,7 @@ const getFileById = asynchandler(async (req, res) => {
 const updateFile = asynchandler(async (req, res) => {
     const { fileId } = req.params
     const { title, description } = req.body
-    console.log("hello")
+   
     if (!isValidObjectId(fileId)) {
         throw new ApiError(400, "Invalid File Access")
     }
@@ -112,22 +114,79 @@ const getAllFile = asynchandler(async (req, res) => {
     )
 })
 
-const deleteFile=asynchandler(async (req,res)=>{
-    const {fileId}=req.params
-    console.log('deleting')
-    if(!fileId){
-        throw new ApiError(404,"File not found")
-    }
-    const deleteing=await FileDetail.findByIdAndDelete(fileId)
-    console.log(deleteing)
+const deleteFile = asynchandler(async (req, res) => {
+    const { fileId } = req.params
 
-    if(!deleteing){
-        throw new ApiError(500,"File not exist")
+    if (!fileId) {
+        throw new ApiError(404, "File not found")
     }
-    console.log(fileId)
+    const filedetails=await FileDetail.findById(fileId)
+    if(!filedetails){
+        throw new ApiError(404, "File not found")
+    }
+
+    const deleteFile = await deleteOnCloudinary(filedetails.fileUrl)
+
+     if (!deleteFile) {
+        throw new ApiError(400, "Error in deleting teh video on cloudinary")
+    }
+    const deleteing = await FileDetail.findByIdAndDelete(fileId)
+   
+
+    if (!deleteing) {
+        throw new ApiError(500, "File not exist")
+    }
     return res.status(200).json(
-        new ApiResponce(200,{fileId},"File Deleted Successfully ")
+        new ApiResponce(200, { fileId }, "File Deleted Successfully ")
     )
 })
+const uploadtextFile = asynchandler(async (req, res) => {
+ 
+    const { title, description, content } = req.body;
+   
 
-export { uploadFile, getFileById, updateFile, getAllFile,deleteFile }
+    if ([title, description, content].some((field) => field?.trim() === '')) {
+        throw new ApiError(400, "All field Are Required ")
+    }
+    const safeTitle = title
+        .trim()
+        .replace(/[<>:"/\\|?*]/g, "_");
+
+    const fileName = `${safeTitle}.txt`;
+    const tempDir = path.join("public", "temp");
+
+    if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    const tempPath = path.join(tempDir, fileName);
+    fs.writeFileSync(tempPath, content);
+
+        const uploadResponse = await uploader(tempPath);
+        if (!uploadResponse) {
+            throw new ApiError(404, "Error Occure While Uploading on cloudinary ")
+        }
+
+        const fileUpload = await FileDetail.create({
+            title,
+            description,
+            fileUrl: uploadResponse.url,
+            fileName,
+            fileSize:uploadResponse.bytes,
+            fileType: "txt",
+
+        })
+        if (!fileUpload) {
+            throw new ApiError(500, "There is Error while uploading on DB")
+        }
+
+
+        return res.status(200).json(
+            new ApiResponce(200, fileUpload, "Text File Uploade Successfully")
+        )
+
+    
+
+
+})
+export { uploadFile, getFileById, updateFile, getAllFile, deleteFile, uploadtextFile }
