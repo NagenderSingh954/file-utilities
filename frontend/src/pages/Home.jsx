@@ -55,7 +55,7 @@ function Home() {
         <>
 
             <div className='w-full min-h-screen flex justify-center items-center mt-15 '>
-                <div className='w-180 rounded-4xl px-10 py-8 shadow-2xl dark:bg-[#162032]'>
+                <div className='w-180 max-md:w-200  rounded-4xl px-10 py-8 shadow-2xl dark:bg-[#162032]'>
                     <div className='flex items-center w-full'><FaCloudUploadAlt className='inline text-5xl text-blue-400' />
                         <span className='p-3 font-medium text-3xl dark:text-yellow-300 '>DropShare </span>
                         <button className='shadow-amber-300 shadow-2xl bg-slate-300 p-3 rounded-full ml-auto'
