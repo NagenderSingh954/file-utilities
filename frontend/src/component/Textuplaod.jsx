@@ -30,21 +30,21 @@ function Textuplaod({ filesinfo, setFilesinfo }) {
 
   return (
   <form onSubmit={handleSubmit(uploadtext)}>
-   <div  >
+   <div className='dark:bg-[#1f2b3d] ' >
     <textarea
     name="content"
     {...register("content",{required:true})}
     placeholder="Write your text here..."
-    className='group border-2 bg-gray-100 border-slate-300 border-dashed w-full h-35 rounded-4xl flex justify-center items-center flex-col hover:border-slate-400 p-3'
+    className='dark:bg-[#1f2b3d] dark:text-white rounded-2xl group border-2 bg-gray-100 border-slate-300 border-dashed w-full h-35 rounded-4xl flex justify-center items-center flex-col hover:border-slate-400 p-3'
 /></div>
      <div
-      className='bg-gray-100 border-1 border-slate-300 p-3 rounded-full w-full flex flex-wrap gap-2 mt-6 justify-around max-md:rounded-2xl'>
-          <input type="text" placeholder='Title' className='py-1.5 px-4 border-1 border-slate-200 rounded-full bg-white ' {...register('title', { required: true })} />
-          <input type="text" placeholder='Description' className='py-1.5 px-4 border-1 border-slate-200 rounded-full bg-white ' {...register('description', { required: true })} />
+      className='dark:bg-[#1f2b3d] bg-gray-100 border-1 border-slate-300 p-3 rounded-full w-full flex flex-wrap gap-2 mt-6 justify-around max-md:rounded-2xl'>
+          <input type="text" placeholder='Title' className='dark:bg-[#0f1729] dark:text-slate-400 py-1.5 px-4 border-1 border-slate-200 rounded-full bg-white ' {...register('title', { required: true })} />
+          <input type="text" placeholder='Description' className='dark:bg-[#0f1729] dark:text-slate-400 py-1.5 px-4 border-1 border-slate-200 rounded-full bg-white ' {...register('description', { required: true })} />
 
           <button
             type="submit"
-            className="flex justify-center items-center gap-1 text-white py-1.5 px-4 rounded-full bg-black"
+            className="flex justify-center dark:bg-[#2563eb] items-center gap-1 text-white py-1.5 px-4 rounded-full bg-black"
             disabled={loading}
           >
             {loading ? (

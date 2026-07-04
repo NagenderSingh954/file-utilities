@@ -38,11 +38,11 @@ function Home() {
     if (dark) {
       document.documentElement.classList.remove("dark");
       document.body.style.backgroundColor ="#fff";
-      localStorage.setItem("theme", "light");
+    //   localStorage.setItem("theme", "light");
     } else {
       document.documentElement.classList.add("dark");
       document.body.style.backgroundColor ="#0b1120";
-      localStorage.setItem("theme", "dark");
+    //   localStorage.setItem("theme", "dark");
     }
 
     setDark(!dark);
@@ -61,7 +61,7 @@ function Home() {
                         <button className='shadow-amber-300 shadow-2xl bg-slate-300 p-3 rounded-full ml-auto'
                             onClick={toggleTheme}
                         >
-                            {theme === 'light' ? <IoMoon /> : <FaSun />}
+                            {!dark ? <IoMoon /> : <FaSun />}
                         </button>
                     </div>
 

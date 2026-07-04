@@ -174,16 +174,16 @@ const editFile=async(fileId,editedTitle,description)=>{
    ):(
       <>{
         filesinfo.map((e)=>(
-          <div key={e._id} className='flex py-4 px-4 border-1 mt-3 border-slate-300 rounded-2xl w-full justify-between items-center'>
+          <div key={e._id} className='flex py-4 px-4 border-1 mt-3 border-slate-300 dark:border-[#2b3b52] rounded-2xl w-full justify-between items-center'>
         <div className='flex gap-9 px-2 justify-center items-center'>
           <div className='text-4xl text-blue-400'>
             {e.fileType?( getFileIcon(e.fileType)):(<FaFolderOpen className='inline text-blue-400'/> ) }
           {/* <FaFileImage className='inline text-blue-400'/> */}
           </div>
           <div >
-            <p className='font-medium text-black'>{e.fileName}</p>
-            <span className='bg-slate-200 rounded-4xl text-[11px] py-1 px-3 text-slate-500 font-medium'>{formateFileSize(e.fileSize)}</span>
-            <span className='bg-slate-200 rounded-4xl text-[11px] text-center py-1 px-3 text-slate-500 font-medium ml-2'>{e.fileType}</span>
+            <p className='font-medium text-black dark:text-[#e8edf5]'>{e.fileName}</p>
+            <span className='bg-slate-200 rounded-4xl text-[11px] py-1 px-3 text-slate-500 font-medium dark:bg-[#28364d]'>{formateFileSize(e.fileSize)}</span>
+            <span className='bg-slate-200 rounded-4xl text-[11px] text-center py-1 px-3 text-slate-500 font-medium ml-2 dark:bg-[#28364d]'>{e.fileType}</span>
             <p className='flex flex-wrap gap-0.5 mt-1'>
               {/* <span className='text-[14px] text-gray-900 font-semibold'>{e.title}</span>
              
@@ -191,11 +191,11 @@ const editFile=async(fileId,editedTitle,description)=>{
 
                <input type="text" value={editingId == e._id? editedTitle:e.title} onChange={(e)=>setEditedTitle(e.target.value)  }
                disabled={editingId !== e._id}
-               className={`text-[14px] text-gray-900 font-semibold ${editingId == e._id? 'border-1 px-4 py-1 border-slate-400 rounded-4xl': 'border-0'}`}/>
-               <LuDot className='inline'/> 
+               className={`text-[14px] text-gray-900 font-semibold ${editingId == e._id? 'border-1 px-4 py-1 border-slate-400 rounded-4xl': 'border-0'} dark:text-[#c9d8f0] ` }/>
+               <LuDot/> 
                <input type="text" value={editingId == e._id? description:e.description} onChange={(e)=>setDescription(e.target.value)  }
                disabled={editingId !== e._id}
-               className={`text-[14px] text-slate-600  ${editingId == e._id? 'border-1 px-4 py-1 border-slate-400 rounded-4xl': 'border-0'}`}/>
+               className={`text-[14px] text-slate-600   ${editingId == e._id? 'border-1 px-4 py-1 border-slate-400 rounded-4xl': 'border-0'}`}/>
               
             </p>
             <p className='text-[13px]'>

@@ -133,7 +133,7 @@ function Uploader({ filesinfo, setFilesinfo }) {
 
           <button
             type="submit"
-            className="flex justify-center items-center gap-1 text-white py-1.5 px-4 rounded-full bg-black"
+            className="flex justify-center dark:bg-[#2563eb] items-center gap-1 text-white py-1.5 px-4 rounded-full bg-black"
             disabled={loading}
           >
             {loading ? (
