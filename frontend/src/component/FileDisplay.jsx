@@ -164,6 +164,26 @@ const editFile=async(fileId,editedTitle,description)=>{
         console.log(error)
       }
   }
+
+const downloadFile = async (url, fileName) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+
+    a.remove();
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (err) {
+    console.error("Download failed:", err);
+  }
+};
   return (
     <>
     <div
@@ -222,7 +242,9 @@ const editFile=async(fileId,editedTitle,description)=>{
             )
           }
           
-       <button className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl'>
+       <button className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl' 
+        onClick={() => downloadFile(e.fileUrl, e.fileName)}
+       >
         <a href={e.fileUrl} download>
          <FaDownload />
          </a>
