@@ -245,9 +245,6 @@ const downloadFile = async (url, fileName) => {
        <button className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl' 
         onClick={() => downloadFile(e.fileUrl, e.fileName)}
        >
-        <a href={e.fileUrl} download>
-         <FaDownload />
-         </a>
          </button>
       <button type='button' title='Delete' className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl'  onClick={()=>{
             deleteFile(e._id)
