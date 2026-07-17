@@ -167,6 +167,7 @@ const editFile=async(fileId,editedTitle,description)=>{
 
 const downloadFile = async (url, fileName) => {
   try {
+    console.log(url)
     const response = await fetch(url);
     const blob = await response.blob();
 
@@ -243,8 +244,10 @@ const downloadFile = async (url, fileName) => {
           }
           
        <button className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl' 
-        onClick={() => downloadFile(e.fileUrl, e.fileName)}
+        onClick={() => downloadFile(e.fileSecure ? e.fileSecure:e.fileUrl, e.fileName)}
        >
+         <FaDownload />
+         
          </button>
       <button type='button' title='Delete' className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl'  onClick={()=>{
             deleteFile(e._id)

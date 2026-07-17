@@ -25,6 +25,10 @@ const filedetail = new Schema({
     },
     fileType: {
         type: String,
+    },
+    fileSecure:{
+        type: String,
+        trim: true
     }
 }, { timestamps: true })
 

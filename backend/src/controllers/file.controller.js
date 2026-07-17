@@ -31,6 +31,8 @@ const uploadFile = asynchandler(async (req, res) => {
     if (!file?.url) {
         throw new ApiError(401, "Error while Uploading the new file")
     }
+    console.log("jsh")
+    console.log(file)
 
     const dbfile = await FileDetail.create({
         title,
@@ -38,7 +40,8 @@ const uploadFile = asynchandler(async (req, res) => {
         fileUrl: file.url,
         fileName: file.original_filename,
         fileSize: file.bytes,
-        fileType: fileExtension
+        fileType: fileExtension,
+        fileSecure: file.secure_url
     })
 
     if (!dbfile) {
@@ -48,8 +51,6 @@ const uploadFile = asynchandler(async (req, res) => {
     return res.status(200).json(
         new ApiResponce(200, dbfile, "File Uploaded SuccessFully ")
     )
-
-
 })
 
 const getFileById = asynchandler(async (req, res) => {
@@ -63,6 +64,7 @@ const getFileById = asynchandler(async (req, res) => {
     if (!file) {
         throw new ApiError(404, "File Not Found")
     }
+    console.log(file)
 
     return res.status(200).json(
         new ApiResponce(200, file, "File fetched Successfully")

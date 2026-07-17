@@ -55,7 +55,7 @@ const getAllFiles = async () => {
     if (!response.ok) {
       setError("there is problem while uploading the file", result.message)
     }
-
+    console.log(result)
     return result;
   } catch (error) {
     console.log(error)
