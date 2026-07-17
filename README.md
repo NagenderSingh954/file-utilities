@@ -46,7 +46,7 @@ A full-stack file upload and sharing application built using the MERN stack. Use
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/NagenderSingh954/file-utilities.git
 cd FileUploadUtility
 ```
 
