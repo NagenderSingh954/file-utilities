@@ -21,10 +21,16 @@ import { deleting, editDetail } from '../utils/Api.js';
 
 
 function FileDisplay({filesinfo,setFilesinfo}) {
+  
  const [editingId, setEditingId] = useState(null);
 const [editedTitle, setEditedTitle] = useState("");
  const [title,settitle]=useState('')
  const [description,setDescription]=useState('')
+
+
+const [protectedFile, setProtectedFile] = useState(null);
+const [password, setPassword] = useState("");
+const [passwordError, setPasswordError] = useState("");
 
   const formateFileSize=(bytes)=>{
     if(bytes==0) return '0 B'
@@ -155,7 +161,7 @@ const editFile=async(fileId,editedTitle,description)=>{
 }
 
 
-  const deleteFile=async(fileId)=>{
+const deleteFile=async(fileId)=>{
       try {
         const responce=await deleting(fileId)
         setFilesinfo(pre=>pre.filter(e=> e._id !== responce.data.fileId))
@@ -165,9 +171,37 @@ const editFile=async(fileId,editedTitle,description)=>{
       }
   }
 
+const handleDownload = (file) => {
+  if (file.password) {
+    setProtectedFile(file);
+    setPassword("");
+    setPasswordError("");
+    return;
+  }
+
+  downloadFile(
+    file.fileSecure || file.fileUrl,
+    file.fileName
+  );
+};
+const verifyPassword = async () => {
+  if (password === protectedFile.password) {
+    await downloadFile(
+      protectedFile.fileSecure || protectedFile.fileUrl,
+      protectedFile.fileName
+    );
+
+    setProtectedFile(null);
+    setPassword("");
+    setPasswordError("");
+  } else {
+    setPasswordError("Incorrect password. Try again.");
+  }
+};
+
 const downloadFile = async (url, fileName) => {
   try {
-    console.log(url)
+    
     const response = await fetch(url);
     const blob = await response.blob();
 
@@ -206,9 +240,7 @@ const downloadFile = async (url, fileName) => {
             <span className='bg-slate-200 rounded-4xl text-[11px] py-1 px-3 text-slate-500 font-medium dark:bg-[#28364d]'>{formateFileSize(e.fileSize)}</span>
             <span className='bg-slate-200 rounded-4xl text-[11px] text-center py-1 px-3 text-slate-500 font-medium ml-2 dark:bg-[#28364d]'>{e.fileType}</span>
             <p className='flex flex-wrap gap-0.5 mt-1'>
-              {/* <span className='text-[14px] text-gray-900 font-semibold'>{e.title}</span>
              
-              <span className='text-[14px] text-slate-600'>{e.description}</span> */}
 
                <input type="text" value={editingId == e._id? editedTitle:e.title} onChange={(e)=>setEditedTitle(e.target.value)  }
                disabled={editingId !== e._id}
@@ -243,12 +275,20 @@ const downloadFile = async (url, fileName) => {
             )
           }
           
-       <button className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl' 
+       {/* <button className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl' 
         onClick={() => downloadFile(e.fileSecure ? e.fileSecure:e.fileUrl, e.fileName)}
        >
          <FaDownload />
          
-         </button>
+         </button> */}
+         <button
+  type="button"
+  title="Download"
+  className="cursor-pointer hover:bg-slate-100 p-2 rounded-4xl"
+  onClick={() => handleDownload(e)}
+>
+  <FaDownload />
+</button>
       <button type='button' title='Delete' className='cursor-pointer hover:bg-slate-100 p-2 rounded-4xl'  onClick={()=>{
             deleteFile(e._id)
           }}>  <RxCross2 /></button>
@@ -261,6 +301,78 @@ const downloadFile = async (url, fileName) => {
 </>
     )}
      </div>
+
+     
+{protectedFile && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-[#172337]">
+
+      <button
+        type="button"
+        onClick={() => {
+          setProtectedFile(null);
+          setPassword("");
+          setPasswordError("");
+        }}
+        className="float-right text-xl"
+      >
+        <RxCross2 />
+      </button>
+
+      <div className="clear-both flex justify-center">
+        <img
+          src="../public/meme4.png"
+          alt="Password protected file"
+          className="h-50 w-50 object-contain"
+        />
+      </div>
+
+      <h2 className="mt-3 text-center text-xl font-bold dark:text-white">
+        Password Protected
+      </h2>
+
+      <p className="mt-2 text-center text-sm text-slate-500">
+        Password Dalo for {" "}
+        <strong>{protectedFile.fileName}</strong>
+      </p>
+
+      <form
+        className="mt-5"
+        onSubmit={(event) => {
+          event.preventDefault();
+          verifyPassword();
+        }}
+      >
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            setPasswordError("");
+          }}
+          placeholder="Enter password"
+          autoComplete="current-password"
+          className="w-full rounded-xl border border-slate-300 bg-transparent px-4 py-3 outline-none focus:border-blue-500 dark:text-white"
+          autoFocus
+        />
+
+        {passwordError && (
+          <p className="mt-2 text-sm text-red-500">
+            {passwordError}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          className="mt-4 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
+        >
+          Verify & Download
+        </button>
+      </form>
+    </div>
+  </div>
+)}
+
     </>
   )
 }
