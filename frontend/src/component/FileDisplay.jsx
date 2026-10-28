@@ -321,10 +321,10 @@ const downloadFile = async (url, fileName) => {
 
       <div className="clear-both flex justify-center">
         <img
-          src="../public/meme4.png"
-          alt="Password protected file"
-          className="h-50 w-50 object-contain"
-        />
+  src="/meme1.jpeg"
+  alt="Password protected file"
+  className="h-50 w-50 object-contain"
+/>
       </div>
 
       <h2 className="mt-3 text-center text-xl font-bold dark:text-white">
